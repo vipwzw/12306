@@ -34,9 +34,10 @@
 // @version		 1.1
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
-// @description  12306 订票助手之(自动登录，自动查票)
+// @description  12306 订票助手之(自动登录，自动查票，自动订单)
 // @include      *://dynamic.12306.cn/otsweb/loginAction.do*
 // @include		 *://dynamic.12306.cn/otsweb/order/querySingleAction.do*
+// @include		 *://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do*
 // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
 // ==/UserScript== 
 
@@ -96,7 +97,13 @@ withjQuery(function($){
 			return false;
 		}
 	}
-	if( window.location.href.indexOf("querySingleAction.do") != -1 ) {
+	function route(match, fn) {
+		if( window.location.href.indexOf(match) != -1 ) {
+			fn();
+		};
+	}
+
+	route("querySingleAction.do", function() {
 		//query
 		var isTicketAvailable = false;
 
@@ -259,12 +266,10 @@ withjQuery(function($){
 			c[0].ticketTypeId = i;
 			c.change(function() {
 				ticketType[this.ticketTypeId] = this.checked;
-				console.log( this );
 			}).appendTo(e);
 		});
-		
-	}
-	else if( window.location.href.indexOf("loginAction.do") != -1 ) {
+	});
+	route("loginAction.do", function() {
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
@@ -327,6 +332,84 @@ withjQuery(function($){
 		}));
 
 		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-	}
+	});
+	route("confirmPassengerAction.do", function() {
+		/**
+		 * Auto Submit Order
+		 * From: https://gist.github.com/1577671
+		 * Author: kevintop@gmail.com  
+		 */
+		//Auto select the first user when not selected
+		if( !$("input._checkbox_class:checked").length ) {
+			$("input._checkbox_class:first").click();
+		}
+		//passengerTickets
 
+		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+		var count = 1;
+		function submitForm(){
+			if(window.submit_form_check && !submit_form_check("confirmPassenger") ) {
+				return;
+			}
+			jQuery.ajax({
+				url: $("#confirmPassenger").attr('action'),
+				data: $('#confirmPassenger').serialize(),
+				type: "POST",
+				timeout: 30000,
+				success: function(msg)
+				{
+					//Refresh token
+					var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+					var newToken = match && match[1];
+					if(newToken) {
+						$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+					}
+
+					if( msg.indexOf('payButton') > -1 ) {
+						//Success!
+						notify("车票预订成功，恭喜!");
+						window.location.replace(userInfoUrl);
+						return;
+					}
+					var reTryMessage = [
+						'用户过多'
+					  , '确认客票的状态后再尝试后续操作'
+					  ,	'请不要重复提交'
+					];
+					for (var i = reTryMessage.length - 1; i >= 0; i--) {
+						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
+							reSubmitForm();
+							return;
+						}
+					};
+					//Parse error message
+					msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
+					stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
+				},
+				error: function(msg){
+					reSubmitForm();
+				}
+			});
+		};
+		function reSubmitForm(){
+			count ++;
+			$('#refreshButton').html("("+count+")次自动提交中...");
+			setTimeout(submitForm, 500);
+		}
+		function stop ( msg ) {
+			$('#refreshButton').html("自动提交订单");
+			alert( msg );
+		}
+		//初始化
+		if($("#refreshButton").size()<1){
+			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
+				//alert('开始自动提交订单，请点确定后耐心等待！');
+				count = 1;
+				$(this).html("(1)次自动提交中...");
+				submitForm();
+				return false;
+			}));
+			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+		}
+	});
 }, true);
