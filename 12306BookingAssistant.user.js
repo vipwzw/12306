@@ -161,7 +161,7 @@ withjQuery(function($){
 
 			$("td", row).each(function(i, e) {
 				if(ticketType[i-1]) {
-					var info = e.innerText.trim();
+					var info = $.trim($(e).text());
 					if(info != "--" && info != "无") {
 						hasTicket = true;
 						highLightCell(e);
