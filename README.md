@@ -1,4 +1,4 @@
-12306 订票助手 1.2
+12306 订票助手 1.3
 ===========================
 
 功能
@@ -64,6 +64,7 @@
 ###1.3
 
 *	修正自动登录失败的BUG
+*	IE支持
 
 
 ###1.2
@@ -99,3 +100,10 @@ GitHub关注： https://github.com/zzdhidden/12306
 *	[自动登录](https://gist.github.com/1570973) 
 *	[自动订单](https://gist.github.com/1577671) 
 
+
+我要回家...
+---------------------
+
+![1](https://github.com/zzdhidden/12306/raw/master/screenshots/gohome.gif)
+![2](https://github.com/zzdhidden/12306/raw/master/screenshots/dt.jpg)
+![3](https://github.com/zzdhidden/12306/raw/master/screenshots/sc.jpg)
