@@ -79,7 +79,7 @@ withjQuery(function($){
 	function notify(str, timeout, skipAlert) {
 		if( window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 ) {
 			var notification = webkitNotifications.createNotification(
-				null,  // icon url - can be relative
+				"http://www.12306.cn/mormhweb/images/favicon.ico",  // icon url - can be relative
 				'订票',  // notification title
 				str
 			);
@@ -351,7 +351,7 @@ withjQuery(function($){
 		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
 			count = 1;
 			$(this).html("(1)次登录中...");
-			//notify('开始尝试登录，请耐心等待！', 4000);
+			notify('开始尝试登录，请耐心等待！', 4000);
 			submitForm();
 			return false;
 		}));
