@@ -1,7 +1,5 @@
-12306 订票助手(谷歌浏览器版) 1.2
+12306 订票助手 1.2
 ===========================
-
-请使用谷歌浏览器，该助手暂只负责登录和更新车票
 
 功能
 ------------
@@ -15,13 +13,15 @@
 使用
 ------------
 
-###安装
+###安装(谷歌浏览器版)
 
 有使用 12306自动登录 和 12306自动查询 的同学可在 插件管理(chrome://settings/extensions) 里面卸载了，因为功能重复了
 
-使用谷歌浏览器 [点击这里](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装此userscript
+使用谷歌浏览器 [点击这里](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装此UserScript
 
-安装成功后 [点击这里](https://dynamic.12306.cn/otsweb/) 开始订票吧
+###开始订票
+
+安装成功后打开 [https://dynamic.12306.cn/otsweb/](https://dynamic.12306.cn/otsweb/) 开始订票吧
 
 ###登录
 
@@ -51,6 +51,11 @@
 
 版本历史
 -----------------------
+
+###1.3
+
+*	修正自动登录失败的BUG
+
 
 ###1.2
 
