@@ -153,7 +153,7 @@ withjQuery(function($){
 			var hasTicket = false;
 			var canBook = true;
 			$("td input[type=button]", row).each(function(i, e) {
-				if(e.classList.contains("yuding_x")) {
+				if($(e).hasClass("yuding_x")) {
 					canBook = false;
 				}
 			});
