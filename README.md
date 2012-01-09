@@ -86,8 +86,8 @@
 获取更新
 --------------------
 
-GitHub关注： https://github.com/zzdhidden/12306
-BUG提交： https://github.com/zzdhidden/12306/issues
+*	GitHub关注： https://github.com/zzdhidden/12306
+*	BUG提交： https://github.com/zzdhidden/12306/issues
 
 
 问题
