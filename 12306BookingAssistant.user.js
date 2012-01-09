@@ -366,7 +366,10 @@ withjQuery(function($){
 		 */
 		//Auto select the first user when not selected
 		if( !$("input._checkbox_class:checked").length ) {
-			$("input._checkbox_class:first").click();
+			try{
+				//Will failed in IE
+				$("input._checkbox_class:first").click();
+			}catch(e){};
 		}
 		//passengerTickets
 
@@ -427,7 +430,7 @@ withjQuery(function($){
 		}
 		//初始化
 		if($("#refreshButton").size()<1){
-			$(".tj_btn").append($("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
+			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
 				count = 1;
 				$(this).html("(1)次自动提交中...");
