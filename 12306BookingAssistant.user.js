@@ -294,6 +294,9 @@ withjQuery(function($){
 		});
 	});
 	route("loginAction.do?method=init", function() {
+		if( !window.location.href.match( /init$/i ) ) {
+			return;
+		}
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
