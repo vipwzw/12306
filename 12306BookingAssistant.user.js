@@ -31,7 +31,7 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.2
+// @version		 1.3
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
@@ -72,7 +72,7 @@ function withjQuery(callback, safe){
 
 withjQuery(function($){
 	$(document).click(function() {
-		if( window.webkitNotifications && window.webkitNotifications.checkPermission() != 0) {
+		if( window.webkitNotifications && window.webkitNotifications.checkPermission() != 0 ) {
 			window.webkitNotifications.requestPermission();
 		}
 	});
@@ -104,20 +104,42 @@ withjQuery(function($){
 	}
 
 	route("querySingleAction.do", function() {
+
 		//query
 		var isTicketAvailable = false;
 
 		//The table for displaying tickets
 		var tbl = $(".obj")[0];
-		// Not work on IE
-		tbl.addEventListener("DOMNodeInserted", function() {
-			if(checkTickets(event.target))
-				{
+		if( tbl.addEventListener ) {
+			// Not work on IE
+			tbl.addEventListener("DOMNodeInserted", function() {
+				if(checkTickets(event.target)){
 					isTicketAvailable = true;
 					highLightRow(event.target);
 				}
 				tbl.firstAppend=false;
-		}, true);
+			}, true);
+		} else {
+			window.$ && window.$(tbl).ajaxComplete(function() {
+				$(this).find("tr").each(function(n, e) {
+					if(checkTickets(e)){
+						isTicketAvailable = true;
+						highLightRow(e);
+					}	
+				});
+				if(g.firstRemove) {
+					g.firstRemove = false;
+					if (isTicketAvailable) {
+						if (isAutoQueryEnabled)
+							document.getElementById("refreshButton").click();
+						onticketAvailable(); //report
+					}
+					else {
+						//wait for the button to become valid
+					}
+				}
+			});
+		}
 
 		//Trigger the button
 		var doQuery = function() {
@@ -153,19 +175,21 @@ withjQuery(function($){
 		//The box into which the message is inserted.
 		var g = document.getElementById("gridbox");
 		//When the message is removed, the query should be completed.
-		g.addEventListener("DOMNodeRemoved", function() {
-			if(g.firstRemove) {
-				g.firstRemove = false;
-				if (isTicketAvailable) {
-					if (isAutoQueryEnabled)
-						document.getElementById("refreshButton").click();
-					onticketAvailable(); //report
+		if( g.addEventListener ) {
+			g.addEventListener("DOMNodeRemoved", function() {
+				if(g.firstRemove) {
+					g.firstRemove = false;
+					if (isTicketAvailable) {
+						if (isAutoQueryEnabled)
+							document.getElementById("refreshButton").click();
+						onticketAvailable(); //report
+					}
+					else {
+						//wait for the button to become valid
+					}
 				}
-				else {
-					//wait for the button to become valid
-				}
-			}
-		}, true);
+			}, true);
+		}
 
 		//hack into the validQueryButton function to detect query
 		var _validQueryButton = validQueryButton;
