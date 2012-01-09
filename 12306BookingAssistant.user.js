@@ -350,7 +350,7 @@ withjQuery(function($){
 		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
 			count = 1;
 			$(this).html("(1)次登录中...");
-			notify('开始尝试登录，请耐心等待！', 4000);
+			//notify('开始尝试登录，请耐心等待！', 4000);
 			submitForm();
 			return false;
 		}));
@@ -426,14 +426,14 @@ withjQuery(function($){
 		}
 		//初始化
 		if($("#refreshButton").size()<1){
-			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
+			$(".tj_btn").append($("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
 				count = 1;
 				$(this).html("(1)次自动提交中...");
 				submitForm();
 				return false;
 			}));
-			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+			alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		}
 	});
 }, true);
