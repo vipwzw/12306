@@ -87,6 +87,7 @@
 --------------------
 
 GitHub关注： https://github.com/zzdhidden/12306
+BUG提交： https://github.com/zzdhidden/12306/issues
 
 
 问题
@@ -105,5 +106,7 @@ GitHub关注： https://github.com/zzdhidden/12306
 ---------------------
 
 ![1](https://github.com/zzdhidden/12306/raw/master/screenshots/gohome.gif)
+
 ![2](https://github.com/zzdhidden/12306/raw/master/screenshots/dt.jpg)
+
 ![3](https://github.com/zzdhidden/12306/raw/master/screenshots/sc.jpg)
