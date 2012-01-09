@@ -320,11 +320,11 @@ withjQuery(function($){
 				//cache: false,
 				//async: false,
 				success: function(msg){
-					if (msg.indexOf('请输入正确的验证码') > -1) {
+					if ( msg.indexOf('请输入正确的验证码') > -1 ) {
 						alert('请输入正确的验证码！');
-					};
-					//Fix: Issue #5
-					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
+					}
+					else if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
+						//Fix: Issue #5
 						reLogin();
 					}
 					else {
