@@ -56,9 +56,9 @@
 那些贡献者们....
 ------------
 
-*	Jingqin Lynn [自动查票](https://gist.github.com/1554666) 
-*	Kevintop [自动登录](https://gist.github.com/1570973) 
-*	Kevintop [自动订单](https://gist.github.com/1577671) 
+*	[Jingqin Lynn](https://gist.github.com/quietlynn) [自动查票](https://gist.github.com/1554666) 
+*	[Kevintop](https://gist.github.com/kevintop) [自动登录](https://gist.github.com/1570973) [自动订单](https://gist.github.com/1577671) 
+*	[Luobailiang](https://github.com/luobailiang) [增加了提交频率和停止等功能](https://gist.github.com/1577671#gistcomment-74361)
 
 版本历史
 -----------------------
