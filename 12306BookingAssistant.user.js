@@ -31,7 +31,7 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.3.1
+// @version		 1.3.2
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
@@ -218,10 +218,10 @@ withjQuery(function($){
 			}
 		}
 		var highLightRow = function(row) {
-			$(row).css("background-color", "red");
+			$(row).css("background-color", "#D1E1F1");
 		}
 		var highLightCell = function(cell) {
-			$(cell).css("background-color", "blue");
+			$(cell).css("background-color", "#2CC03E");
 		}
 		var displayQueryTimes = function(n) {
 			document.getElementById("refreshTimes").innerText = n;
@@ -377,8 +377,9 @@ withjQuery(function($){
 		//passengerTickets
 
 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
-		var count = 1;
+		var count = 1, freq = 1000, doing = false, timer, $msg = $("<div style='padding-left:470px;'></div>");
 		function submitForm(){
+			timer = null;
 			if(window.submit_form_check && !submit_form_check("confirmPassenger") ) {
 				return;
 			}
@@ -409,7 +410,7 @@ withjQuery(function($){
 					];
 					for (var i = reTryMessage.length - 1; i >= 0; i--) {
 						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
-							reSubmitForm();
+							reSubmitForm( reTryMessage[i] );
 							return;
 						}
 					};
@@ -418,29 +419,50 @@ withjQuery(function($){
 					stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
 				},
 				error: function(msg){
-					reSubmitForm();
+					reSubmitForm("网络错误");
 				}
 			});
 		};
-		function reSubmitForm(){
+		function reSubmitForm(msg){
+			if( !doing )return;
 			count ++;
-			$('#refreshButton').html("("+count+")次自动提交中...");
-			setTimeout(submitForm, 500);
+			$msg.html("("+count+")次自动提交中... " + (msg || ""));
+			timer = setTimeout( submitForm, freq || 500 );
 		}
 		function stop ( msg ) {
+			doing = false;
+			$msg.html("("+count+")次 已停止");
 			$('#refreshButton').html("自动提交订单");
-			alert( msg );
+			timer && clearTimeout( timer );
+			msg && alert( msg );
 		}
 		//初始化
 		if($("#refreshButton").size()<1){
+
+			//日期可选
+
+			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+
 			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
-				count = 1;
-				$(this).html("(1)次自动提交中...");
-				submitForm();
+				if( this.innerText.indexOf("自动提交订单") == -1 ){
+					//doing
+					stop();
+				} else {
+					count = 0;
+					doing = true;
+					this.innerText = "停止自动提交";
+					reSubmitForm();
+				}
 				return false;
 			}));
-			alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+			$(".tj_btn").append("自动提交频率：")
+				.append($("<select id='freq'><option value='500' >频繁</option><option value='1000' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
+					freq = parseInt( $(this).val() );
+					console.log( freq );
+				}))
+				.append($msg);
+			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		}
 	});
 }, true);

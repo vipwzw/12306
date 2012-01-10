@@ -1,4 +1,4 @@
-12306 订票助手 1.3.1
+12306 订票助手 1.3.2
 ===========================
 
 功能
@@ -26,6 +26,8 @@
 下载[这个脚本](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js) 保存到 C:\Program Files\Bhelpuri\Trixie\Scripts文件夹下（64位系统在：C:\Program Files (x86)\Bhelpuri\Trixie\Scripts）
 
 在工具->Trixie Options（Trixie选项）中点击Reload Scripts（重新载入）按钮，再选中该脚本，即可使用（如在工具里面没发现Trixie Options请重启浏览器）。
+
+如果发现乱码，请将脚本保存为UTF-8编码，然后再重新在Trixie Options选项中Reload脚本。
 
 
 ###开始订票
@@ -61,6 +63,13 @@
 版本历史
 -----------------------
 
+###1.3.2
+
+*	改变刷票页面字体高亮颜色 [#14](https://github.com/zzdhidden/12306/issues/14)
+*	增加提交频率和停止提交订单功能 [#13](https://github.com/zzdhidden/12306/issues/13)
+*	订单中日期修改 [#12](https://github.com/zzdhidden/12306/issues/12)
+
+
 ###1.3.1
 
 *	解决点击“我的12306”会不断跳转BUG
@@ -91,12 +100,12 @@
 --------------------
 
 *	GitHub关注： https://github.com/zzdhidden/12306
-*	BUG提交： https://github.com/zzdhidden/12306/issues
 
 
 问题
 --------------------
 
+*	BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306/issues
 *	登录的验证码，不去请求那个验证码连接，验证码不会更新，于是可使用ajax请求登录
 
 更多问题请参考下面三个帖子
