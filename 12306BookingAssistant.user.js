@@ -50,7 +50,7 @@ function withjQuery(callback, safe){
 		if(safe) {
 			var cb = document.createElement("script");
 			cb.type = "text/javascript";
-			cb.textContent = "jQuery.noConflict();(" + callback.toString() + ")(jQuery);";
+			cb.textContent = "jQuery.noConflict();(" + callback.toString() + ")(jQuery, window);";
 			script.addEventListener('load', function() {
 				document.head.appendChild(cb);
 			});
@@ -61,16 +61,16 @@ function withjQuery(callback, safe){
 			script.addEventListener('load', function() {
 				jQuery.noConflict();
 				$ = dollar;
-				callback(jQuery);
+				callback(jQuery, window);
 			});
 		}
 		document.head.appendChild(script);
 	} else {
-		callback(jQuery);
+		callback(jQuery, typeof unsafeWindow == "undefined" ? window : unsafeWindow);
 	}
 }
 
-withjQuery(function($){
+withjQuery(function($, window){
 	$(document).click(function() {
 		if( window.webkitNotifications && window.webkitNotifications.checkPermission() != 0 ) {
 			window.webkitNotifications.requestPermission();
@@ -103,6 +103,7 @@ withjQuery(function($){
 		};
 	}
 
+
 	route("querySingleAction.do", function() {
 
 		//query
@@ -112,7 +113,7 @@ withjQuery(function($){
 		var tbl = $(".obj")[0];
 		if( tbl.addEventListener ) {
 			// Not work on IE
-			tbl.addEventListener("DOMNodeInserted", function() {
+			tbl.addEventListener("DOMNodeInserted", function(event) {
 				if(checkTickets(event.target)){
 					isTicketAvailable = true;
 					highLightRow(event.target);
@@ -176,7 +177,7 @@ withjQuery(function($){
 		var g = document.getElementById("gridbox");
 		//When the message is removed, the query should be completed.
 		if( g.addEventListener ) {
-			g.addEventListener("DOMNodeRemoved", function() {
+			g.addEventListener("DOMNodeRemoved", function(event) {
 				if(g.firstRemove) {
 					g.firstRemove = false;
 					if (isTicketAvailable) {
@@ -224,7 +225,7 @@ withjQuery(function($){
 			$(cell).css("background-color", "#2CC03E");
 		}
 		var displayQueryTimes = function(n) {
-			document.getElementById("refreshTimes").innerText = n;
+			document.getElementById("refreshTimes").innerHTML = n;
 		};
 
 		var isStudentTicket = false;
@@ -246,11 +247,11 @@ withjQuery(function($){
 						if(audio && !audio.paused) audio.pause();
 						isAutoQueryEnabled = true;
 						doQuery();
-						this.innerText="停止刷票";
+						this.innerHTML="停止刷票";
 					}
 					else {
 						isAutoQueryEnabled = false;
-						this.innerText="开始刷票";
+						this.innerHTML="开始刷票";
 					}
 				})
 			)
@@ -377,18 +378,22 @@ withjQuery(function($){
 		//passengerTickets
 
 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+
 		var count = 1, freq = 1000, doing = false, timer, $msg = $("<div style='padding-left:470px;'></div>");
+
 		function submitForm(){
 			timer = null;
-			if(window.submit_form_check && !submit_form_check("confirmPassenger") ) {
-				return;
-			}
+			//更改提交列车日期参数
+			var wantDate = $("#startdatepicker").val();
+			$("#start_date").val(wantDate);
+			$("#_train_date_str").val(wantDate);
+
 			jQuery.ajax({
 				url: $("#confirmPassenger").attr('action'),
 				data: $('#confirmPassenger').serialize(),
 				type: "POST",
 				timeout: 30000,
-				success: function(msg)
+				success: function( msg )
 				{
 					//Refresh token
 					var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
@@ -400,6 +405,10 @@ withjQuery(function($){
 					if( msg.indexOf('payButton') > -1 ) {
 						//Success!
 						notify("车票预订成功，恭喜!");
+						window.location.replace(userInfoUrl);
+						return;
+					}else if(msg.indexOf('未处理的订单') > -1){
+						notify("有未处理的订单!");
 						window.location.replace(userInfoUrl);
 						return;
 					}
@@ -436,8 +445,18 @@ withjQuery(function($){
 			timer && clearTimeout( timer );
 			msg && alert( msg );
 		}
+		function reloadSeat(){
+			$("select[name$='_seat']").html('<option value="M" selected="">一等座</option><option value="O" selected="">二等座</option><option value="1">硬座</option><option value="3">硬卧</option><option value="4">软卧</option>');
+		}
 		//初始化
 		if($("#refreshButton").size()<1){
+			//重置后加载所有席别
+			$("select[name$='_seat']").each(function(){this.blur(function(){
+				alert(this.attr("id") + "blur");
+			})});
+		//初始化所有席别
+		$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
+		reloadSeat();
 
 			//日期可选
 
@@ -445,13 +464,16 @@ withjQuery(function($){
 
 			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
-				if( this.innerText.indexOf("自动提交订单") == -1 ){
+				if( this.innerHTML.indexOf("自动提交订单") == -1 ){
 					//doing
 					stop();
 				} else {
+					if( window.submit_form_check && !submit_form_check("confirmPassenger") ) {
+						return;
+					}
 					count = 0;
 					doing = true;
-					this.innerText = "停止自动提交";
+					this.innerHTML = "停止自动提交";
 					reSubmitForm();
 				}
 				return false;
