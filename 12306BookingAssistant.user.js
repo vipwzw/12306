@@ -31,7 +31,7 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.3.3
+// @version		 1.3.4
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
@@ -405,9 +405,9 @@ withjQuery(function($, window){
 		function submitForm(){
 			timer = null;
 			//更改提交列车日期参数
-			var wantDate = $("#startdatepicker").val();
-			$("#start_date").val(wantDate);
-			$("#_train_date_str").val(wantDate);
+			//var wantDate = $("#startdatepicker").val();
+			//$("#start_date").val(wantDate);
+			//$("#_train_date_str").val(wantDate);
 
 			jQuery.ajax({
 				url: $("#confirmPassenger").attr('action'),
@@ -477,18 +477,20 @@ withjQuery(function($, window){
 			$("select[name$='_seat']").html('<option value="M" selected="">一等座</option><option value="O" selected="">二等座</option><option value="1">硬座</option><option value="3">硬卧</option><option value="4">软卧</option>');
 		}
 		//初始化
+		
 		if($("#refreshButton").size()<1){
-			//重置后加载所有席别
-			$("select[name$='_seat']").each(function(){this.blur(function(){
-				alert(this.attr("id") + "blur");
-			})});
-		//初始化所有席别
-		$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
-		reloadSeat();
 
-			//日期可选
+		//	//重置后加载所有席别
+		//	$("select[name$='_seat']").each(function(){this.blur(function(){
+		//		alert(this.attr("id") + "blur");
+		//	})});
+		////初始化所有席别
+		//$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
+		//reloadSeat();
 
-			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+		//日期可选
+
+			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 
 			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
