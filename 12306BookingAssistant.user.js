@@ -66,7 +66,10 @@ function withjQuery(callback, safe){
 		}
 		document.head.appendChild(script);
 	} else {
-		callback(jQuery, typeof unsafeWindow == "undefined" ? window : unsafeWindow);
+		setTimeout(function() {
+			//Firefox supports
+			callback(jQuery, typeof unsafeWindow === "undefined" ? window : unsafeWindow);
+		}, 30);
 	}
 }
 
@@ -193,9 +196,9 @@ withjQuery(function($, window){
 		}
 
 		//hack into the validQueryButton function to detect query
-		var _validQueryButton = validQueryButton;
+		var _validQueryButton = window.validQueryButton;
 
-		validQueryButton = function() {
+		window.validQueryButton = function() {
 			_validQueryButton();
 			if(isAutoQueryEnabled) doQuery();
 		}
@@ -265,13 +268,17 @@ withjQuery(function($, window){
 				$("<div>如果只需要刷特定的票种，请在余票信息下面勾选。</div>")
 					.append($("<a href='#' style='color: blue;'>只勾选坐票&nbsp;&nbsp;</a>").click(function() {
 						$(".hdr tr:eq(2) td").each(function(i,e) {
-							$(this).find("input").attr("checked", $(this).text().indexOf("座") != -1 ).change();
+							var val = this.innerHTML.indexOf("座") != -1;
+							var el = $(this).find("input").attr("checked", val);
+							el && el[0] && ( ticketType[el[0].ticketTypeId] = val );
 						});
 						return false;
 					}))
 					.append($("<a href='#' style='color: blue;'>只勾选卧铺&nbsp;&nbsp;</a>").click(function() {
 						$(".hdr tr:eq(2) td").each(function(i,e) {
-							$(this).find("input").attr("checked", $(this).text().indexOf("卧") != -1 ).change();
+							var val = this.innerHTML.indexOf("卧") != -1;
+							var el = $(this).find("input").attr("checked", val);
+							el && el[0] && ( ticketType[el[0].ticketTypeId] = val );
 						});
 						return false;
 					}))
@@ -302,8 +309,8 @@ withjQuery(function($, window){
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
 		//Check had login, redirect to query url
-		if( parent && parent.$ ) {
-			var str = parent.$("#username_ a").attr("href");
+		if( window.parent && window.parent.$ ) {
+			var str = window.parent.$("#username_ a").attr("href");
 			if( str && str.indexOf("sysuser/user_info") != -1 ){
 				window.location.href = queryurl;
 				return;
@@ -481,7 +488,6 @@ withjQuery(function($, window){
 			$(".tj_btn").append("自动提交频率：")
 				.append($("<select id='freq'><option value='500' >频繁</option><option value='1000' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
 					freq = parseInt( $(this).val() );
-					console.log( freq );
 				}))
 				.append($msg);
 			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
