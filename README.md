@@ -1,4 +1,4 @@
-12306 订票助手 1.3.2
+12306 订票助手 1.3.3
 ===========================
 
 功能
@@ -62,6 +62,12 @@
 
 版本历史
 -----------------------
+
+###1.3.3
+
+*	限定多个车次刷票 [#29](https://github.com/zzdhidden/12306/issues/29)
+*	Firefox greasemonkey插件支持 [#21](https://github.com/zzdhidden/12306/issues/21)
+*	更新自动提交代码 [#25](https://github.com/zzdhidden/12306/issues/25)
 
 ###1.3.2
 
