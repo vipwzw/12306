@@ -153,15 +153,20 @@ withjQuery(function($, window){
 			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
 		}
 
+		var $special = $("<input type='text' />")
 		var checkTickets = function(row) {
 			var hasTicket = false;
-			var canBook = true;
-			$("td input[type=button]", row).each(function(i, e) {
-				if($(e).hasClass("yuding_x")) {
-					canBook = false;
+			var v1 = $special.val();
+			if( v1 ) {
+				var v2 = $.trim( $(row).find(".base_txtdiv").text() );
+				if( v1.indexOf( v2 ) == -1 ) {
+					return false;
 				}
-			});
-			if(!canBook) return false;
+			}
+
+			if( $(row).find("td input.yuding_x[type=button]").length ) {
+				return false;
+			}
 
 			$("td", row).each(function(i, e) {
 				if(ticketType[i-1]) {
@@ -282,6 +287,11 @@ withjQuery(function($, window){
 						});
 						return false;
 					}))
+			)
+			.append( 
+				$("<div>限定出发车次：</div>")
+					.append( $special )
+					.append( "不限制不填写，限定多次用逗号分割,例如: G32,G34" )
 			);
 		var container = $(".cx_title_w:first");
 		container.length ?
