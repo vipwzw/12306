@@ -338,9 +338,11 @@ withjQuery(function($, window){
 				  , "randCode": $("#randCode").val()
 				},
 				beforeSend: function( xhr ) {
-					xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
-					xhr.setRequestHeader('Cache-Control', 'max-age=0');
-					xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+					try{
+						xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
+						xhr.setRequestHeader('Cache-Control', 'max-age=0');
+						xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+					}catch(e){};
 				},
 				timeout: 30000,
 				//cache: false,
@@ -360,9 +362,6 @@ withjQuery(function($, window){
 				},
 				error: function(msg){
 					reLogin();
-				},
-				beforeSend: function(XHR){
-					//alert("Data Saved: " + XHR);
 				}
 			});
 		}
@@ -414,9 +413,11 @@ withjQuery(function($, window){
 				url: $("#confirmPassenger").attr('action'),
 				data: $('#confirmPassenger').serialize(),
 				beforeSend: function( xhr ) {
-					xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
-					xhr.setRequestHeader('Cache-Control', 'max-age=0');
-					xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+					try{
+						xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
+						xhr.setRequestHeader('Cache-Control', 'max-age=0');
+						xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+					}catch(e){};
 				},
 				type: "POST",
 				timeout: 30000,
