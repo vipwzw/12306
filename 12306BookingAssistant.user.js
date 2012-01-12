@@ -337,6 +337,11 @@ withjQuery(function($, window){
 				  , "user.password": $("#password").val()
 				  , "randCode": $("#randCode").val()
 				},
+				beforeSend: function( xhr ) {
+					xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
+					xhr.setRequestHeader('Cache-Control', 'max-age=0');
+					xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+				},
 				timeout: 30000,
 				//cache: false,
 				//async: false,
@@ -408,6 +413,11 @@ withjQuery(function($, window){
 			jQuery.ajax({
 				url: $("#confirmPassenger").attr('action'),
 				data: $('#confirmPassenger').serialize(),
+				beforeSend: function( xhr ) {
+					xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
+					xhr.setRequestHeader('Cache-Control', 'max-age=0');
+					xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
+				},
 				type: "POST",
 				timeout: 30000,
 				success: function( msg )
