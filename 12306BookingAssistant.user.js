@@ -31,7 +31,7 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.3.5
+// @version		 1.3.6
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
@@ -348,17 +348,19 @@ withjQuery(function($, window){
 				//cache: false,
 				//async: false,
 				success: function(msg){
+					//密码输入错误
+					//您的用户已经被锁定
 					if ( msg.indexOf('请输入正确的验证码') > -1 ) {
 						alert('请输入正确的验证码！');
-					}
-					else if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
-						//Fix: Issue #5
+					} else if ( msg.indexOf('当前访问用户过多') > -1 ){
 						reLogin();
-					}
-					else {
+					} else if( msg.match(/var\s+isLogin\s*=\s*true/i) ) {
 						notify('登录成功，开始查询车票吧！');
 						window.location.replace( queryurl );
-					};
+					} else {
+						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
+						alert( msg && msg[1] || "未知错误" );
+					}
 				},
 				error: function(msg){
 					reLogin();
