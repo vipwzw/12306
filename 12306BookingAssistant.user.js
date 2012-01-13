@@ -31,7 +31,7 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.3.4
+// @version		 1.3.5
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
@@ -498,7 +498,7 @@ withjQuery(function($, window){
 					//doing
 					stop();
 				} else {
-					if( window.submit_form_check && !submit_form_check("confirmPassenger") ) {
+					if( window.submit_form_check && !window.submit_form_check("confirmPassenger") ) {
 						return;
 					}
 					count = 0;
