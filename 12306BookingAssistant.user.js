@@ -410,8 +410,20 @@ withjQuery(function($, window){
 
 					if( msg.indexOf('payButton') > -1 ) {
 						//Success!
-						notify("车票预订成功，恭喜!");
-						window.location.replace(userInfoUrl);
+						var audio;
+						if( window.Audio ) {
+							audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
+							audio.loop = true;
+							audio.play();
+						}
+						notify("恭喜，车票预订成！", null, true);
+						setTimeout(function() {
+							if( confirm("车票预订成，去付款？") ){
+								window.location.replace(userInfoUrl);
+							} else {
+								if(audio && !audio.paused) audio.pause();
+							}
+						}, 100);
 						return;
 					}else if(msg.indexOf('未处理的订单') > -1){
 						notify("有未处理的订单!");
