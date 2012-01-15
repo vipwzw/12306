@@ -31,13 +31,11 @@
 
 // ==UserScript==  
 // @name         12306 Booking Assistant
-// @version		 1.3.6
+// @version		 1.3.7
 // @author       zzdhidden@gmail.com
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
-// @include      *://dynamic.12306.cn/otsweb/loginAction.do*
-// @include		 *://dynamic.12306.cn/otsweb/order/querySingleAction.do*
-// @include		 *://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do*
+// @include      *://dynamic.12306.cn/otsweb/*
 // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
 // ==/UserScript== 
 
@@ -107,49 +105,48 @@ withjQuery(function($, window){
 	}
 
 
-	route("querySingleAction.do", function() {
+	function query() {
 
 		//query
 		var isTicketAvailable = false;
 
-		//The table for displaying tickets
-		var tbl = $(".obj")[0];
-		if( tbl.addEventListener ) {
-			// Not work on IE
-			tbl.addEventListener("DOMNodeInserted", function(event) {
-				if(checkTickets(event.target)){
+		var firstRemove = false;
+
+		window.$ && window.$(".obj:first").ajaxComplete(function() {
+			$(this).find("tr").each(function(n, e) {
+				if(checkTickets(e)){
 					isTicketAvailable = true;
-					highLightRow(event.target);
-				}
-				tbl.firstAppend=false;
-			}, true);
-		} else {
-			window.$ && window.$(tbl).ajaxComplete(function() {
-				$(this).find("tr").each(function(n, e) {
-					if(checkTickets(e)){
-						isTicketAvailable = true;
-						highLightRow(e);
-					}	
-				});
-				if(g.firstRemove) {
-					g.firstRemove = false;
-					if (isTicketAvailable) {
-						if (isAutoQueryEnabled)
-							document.getElementById("refreshButton").click();
-						onticketAvailable(); //report
-					}
-					else {
-						//wait for the button to become valid
-					}
-				}
+					highLightRow(e);
+				}	
 			});
+			if(firstRemove) {
+				firstRemove = false;
+				if (isTicketAvailable) {
+					if (isAutoQueryEnabled)
+						document.getElementById("refreshButton").click();
+					onticketAvailable(); //report
+				}
+				else {
+					//wait for the button to become valid
+				}
+			}
+		}).ajaxError(function() {
+			if(isAutoQueryEnabled) doQuery();
+		});
+
+		//hack into the validQueryButton function to detect query
+		var _delayButton = window.delayButton;
+		console.log(_delayButton);
+
+		window.delayButton = function() {
+			_delayButton();
+			if(isAutoQueryEnabled) doQuery();
 		}
 
 		//Trigger the button
 		var doQuery = function() {
 			displayQueryTimes(queryTimes++);
-			tbl.firstAppend = true;
-			g.firstRemove = true;
+			firstRemove = true;
 			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
 		}
 
@@ -181,32 +178,6 @@ withjQuery(function($, window){
 			return hasTicket;
 		}
 
-		//The box into which the message is inserted.
-		var g = document.getElementById("gridbox");
-		//When the message is removed, the query should be completed.
-		if( g.addEventListener ) {
-			g.addEventListener("DOMNodeRemoved", function(event) {
-				if(g.firstRemove) {
-					g.firstRemove = false;
-					if (isTicketAvailable) {
-						if (isAutoQueryEnabled)
-							document.getElementById("refreshButton").click();
-						onticketAvailable(); //report
-					}
-					else {
-						//wait for the button to become valid
-					}
-				}
-			}, true);
-		}
-
-		//hack into the validQueryButton function to detect query
-		var _validQueryButton = window.validQueryButton;
-
-		window.validQueryButton = function() {
-			_validQueryButton();
-			if(isAutoQueryEnabled) doQuery();
-		}
 
 		var queryTimes = 0; //counter
 		var isAutoQueryEnabled = false; //enable flag
@@ -310,7 +281,12 @@ withjQuery(function($, window){
 				ticketType[this.ticketTypeId] = this.checked;
 			}).appendTo(e);
 		});
-	});
+	}
+
+	route("querySingleAction.do", query);
+	route("myOrderAction.do?method=resign", query);
+	route("confirmPassengerResignAction.do?method=cancelOrderToQuery", query);
+
 	route("loginAction.do?method=init", function() {
 		if( !window.location.href.match( /init$/i ) ) {
 			return;
