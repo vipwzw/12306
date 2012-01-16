@@ -21,6 +21,12 @@
 
 使用谷歌浏览器 [点击这里](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装此UserScript
 
+
+###安装(360极速浏览器)
+
+移步[火车票刷票机](http://chrome.360.cn/extensions/detail/jaojfpnikjjobngdfbgbhflfooidihmg/)
+
+
 ###安装(IE版) 
 
 首先安装 [Trixie](http://www.bhelpuri.net/Trixie/TrixieDownload.htm)
