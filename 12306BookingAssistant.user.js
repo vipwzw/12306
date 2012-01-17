@@ -347,7 +347,7 @@ withjQuery(function($, window){
 		function reLogin(){
 			count ++;
 			$('#refreshButton').html("("+count+")次登录中...");
-			setTimeout(submitForm, 2000);
+			setTimeout(submitForm, 50);
 		}
 		//初始化
 		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
@@ -433,6 +433,7 @@ withjQuery(function($, window){
 						'用户过多'
 					  , '确认客票的状态后再尝试后续操作'
 					  ,	'请不要重复提交'
+					  , '没有足够的票!'
 					];
 					for (var i = reTryMessage.length - 1; i >= 0; i--) {
 						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
@@ -453,7 +454,7 @@ withjQuery(function($, window){
 			if( !doing )return;
 			count ++;
 			$msg.html("("+count+")次自动提交中... " + (msg || ""));
-			timer = setTimeout( submitForm, freq || 500 );
+			timer = setTimeout( submitForm, freq || 50 );
 		}
 		function stop ( msg ) {
 			doing = false;
@@ -498,7 +499,7 @@ withjQuery(function($, window){
 				return false;
 			}));
 			$(".tj_btn").append("自动提交频率：")
-				.append($("<select id='freq'><option value='500' >频繁</option><option value='1000' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
+				.append($("<select id='freq'><option value='50' >频繁</option><option value='500' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
 					freq = parseInt( $(this).val() );
 				}))
 				.append($msg);
