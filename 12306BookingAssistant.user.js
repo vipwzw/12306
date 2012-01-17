@@ -433,6 +433,7 @@ withjQuery(function($, window){
 						'用户过多'
 					  , '确认客票的状态后再尝试后续操作'
 					  ,	'请不要重复提交'
+					  , '没有足够的票!'
 					];
 					for (var i = reTryMessage.length - 1; i >= 0; i--) {
 						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
