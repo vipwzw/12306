@@ -498,7 +498,7 @@ withjQuery(function($, window){
 				return false;
 			}));
 			$(".tj_btn").append("自动提交频率：")
-				.append($("<select id='freq'><option value='500' >频繁</option><option value='1000' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
+				.append($("<select id='freq'><option value='50' >频繁</option><option value='500' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
 					freq = parseInt( $(this).val() );
 				}))
 				.append($msg);
