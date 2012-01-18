@@ -1,7 +1,7 @@
 12306 订票助手 1.3.9
 ===========================
 
-遇到重复提示‘确认客票的状态后再尝试后续操作’和‘请不要重复提交’的同学请更新到 >= 1.3.4 
+BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306/issues
 
 功能
 ------------
@@ -9,7 +9,7 @@
 *	支付方式需网银支持google浏览器支付，目前成功使用招商银行手机支付购票成功
 *	自动尝试登录，登录成功提示
 *	根据条件自动查票，有票以后声音提示
-*	订单自动重试(测试版)
+*	订单自动重试
 
 
 使用
@@ -152,25 +152,3 @@
 
 *	GitHub关注： https://github.com/zzdhidden/12306
 
-
-问题
---------------------
-
-*	BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306/issues
-*	登录的验证码，不去请求那个验证码连接，验证码不会更新，于是可使用ajax请求登录
-
-更多问题请参考下面三个帖子
-
-*	[自动查票](https://gist.github.com/1554666) 
-*	[自动登录](https://gist.github.com/1570973) 
-*	[自动订单](https://gist.github.com/1577671) 
-
-
-我要回家...
----------------------
-
-![1](https://github.com/zzdhidden/12306/raw/master/screenshots/gohome.gif)
-
-![2](https://github.com/zzdhidden/12306/raw/master/screenshots/dt.jpg)
-
-![3](https://github.com/zzdhidden/12306/raw/master/screenshots/sc.jpg)
