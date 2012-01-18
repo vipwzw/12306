@@ -149,13 +149,39 @@ withjQuery(function($, window){
 			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
 		}
 
-		var $special = $("<input type='text' />")
+		var $special = $("<input type='text' />")	
+		//add by 冯岩 begin 2012-01-18
+		var $specialOnly = $("<label style='margin-left:10px;color: blue;'><input type='checkbox'  id='__chkspecialOnly'/>仅显示限定车次<label>");
+		var $includeCanOder = $("<label style='margin-right:10px;color: blue;'><input type='checkbox' id='__chkIncludeCanOder'/>显示可预定车次<label>");
+		//add by 冯岩 end 2012-01-18
 		var checkTickets = function(row) {
 			var hasTicket = false;
-			var v1 = $special.val();
+			var v1 = $special.val();			
+			var removeOther = $("#__chkspecialOnly").attr("checked");
+			var includeCanOder = $("#__chkIncludeCanOder").attr("checked");
 			if( v1 ) {
 				var v2 = $.trim( $(row).find(".base_txtdiv").text() );
 				if( v1.indexOf( v2 ) == -1 ) {
+					//add by 冯岩 begin 2012-01-18
+					if(removeOther)
+					{
+						if(v2 != "")
+						{
+							if(includeCanOder)
+							{
+								//包括其他可以预定的行
+								if($(row).find(".yuding_u").size() == 0)
+								{
+									$(row).remove();
+								}
+							}
+							else
+							{
+								$(row).remove();
+							}
+						}
+					}
+					//add by 冯岩 end 2012-01-18
 					return false;
 				}
 			}
@@ -261,6 +287,8 @@ withjQuery(function($, window){
 			.append( 
 				$("<div>限定出发车次：</div>")
 					.append( $special )
+					.append( $specialOnly)
+					.append( $includeCanOder )
 					.append( "不限制不填写，限定多次用逗号分割,例如: G32,G34" )
 			);
 		var container = $(".cx_title_w:first");
@@ -511,6 +539,7 @@ withjQuery(function($, window){
 				}))
 				.append($msg);
 			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+			
 		}
 	};
 }, true);
