@@ -476,6 +476,13 @@ withjQuery(function($, window){
 							return;
 						}
 					};
+					// 铁道部修改验证码规则后  update by 冯岩
+					if( msg.indexOf( "输入的验证码不正确" ) > -1 ) {
+						$("#img_rrand_code").click();
+						$("#rand").focus().select();
+						stop();
+						return;
+					}
 					//Parse error message
 					msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
 					stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
@@ -514,9 +521,9 @@ withjQuery(function($, window){
 			//reloadSeat();
 
 			//日期可选
-
-			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
-
+			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+			$("#start_date").remove();
+			 
 			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
 				if( this.innerHTML.indexOf("自动提交订单") == -1 ){
@@ -540,6 +547,13 @@ withjQuery(function($, window){
 				.append($msg);
 			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 			
+			//铁道路修改验证码规则后 优化 by 冯岩
+			$("#rand").bind('keydown', function (e) {
+				var key = e.which;
+				if (key == 13) {
+					$("#refreshButton").click();
+				}
+			});
 		}
 	};
 }, true);
