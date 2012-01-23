@@ -108,8 +108,49 @@ withjQuery(function($, window){
 	function query() {
 
 		//query
+        var maxIncreaseDay  = 0 ;
+        var start_autoIncreaseDay = null ;
+        var index_autoIncreaseDay = 1 ;
+        var pools_autoIncreaseDay = []  ;
+        function  __reset_autoIncreaseDays(){
+            maxIncreaseDay   = parseInt( document.getElementById('autoIncreaseDays').value ) || 0 ;
+            document.getElementById('autoIncreaseDays').value   = maxIncreaseDay ;
+            start_autoIncreaseDay   = null ;
+        }
+        function  __set_autoIncreaseDays(){
+            if( !start_autoIncreaseDay ) {
+                start_autoIncreaseDay   =  document.getElementById('startdatepicker').value ;
+                var _list   = start_autoIncreaseDay.split(/\D+0?/) ;
+                var pools   = [ start_autoIncreaseDay ] ;
+                for(var i = 0 ; i < maxIncreaseDay -1 ; i++){
+                    var _d  = new Date;
+                    _d.setFullYear( parseInt( _list[0] )   ) ;
+                    _d.setMonth( parseInt( _list[1] )  - 1  ) ;
+                    _d.setDate( parseInt( _list[2] )  + i  + 1 ) ;
+                    var __y   = String(_d.getFullYear());
+                    var __m = _d.getMonth();
+                    var __d = _d.getDate();
+                    if( __m < 9 ) __m = '0' + String( ( __m + 1 ) );
+                    else    __m = String( ( __m + 1 ) ) ;
+                    if( __d <= 9 ) __d = '0' + String(  __d );
+                    else __d = String(  __d );
+                    var _date   = __y + '-' + __m + '-' + __d ;
+                    pools.push( _date ) ;
+                }
+                index_autoIncreaseDay = 1 ;
+                alert(pools)
+                pools_autoIncreaseDay   = pools ;
+                return ;
+            }
+            var value   = pools_autoIncreaseDay[index_autoIncreaseDay];
+            index_autoIncreaseDay++;
+            if( index_autoIncreaseDay >= pools_autoIncreaseDay.length ) {
+                index_autoIncreaseDay   = 0 ;
+            }
+             document.getElementById('startdatepicker').value   = value ;
+        }
+        
 		var isTicketAvailable = false;
-
 		var firstRemove = false;
 
 		window.$ && window.$(".obj:first").ajaxComplete(function() {
@@ -146,6 +187,7 @@ withjQuery(function($, window){
 		var doQuery = function() {
 			displayQueryTimes(queryTimes++);
 			firstRemove = true;
+            __set_autoIncreaseDays();
 			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
 		}
 
@@ -238,15 +280,22 @@ withjQuery(function($, window){
 		var ui = $("<div>请先选择好出发地，目的地，和出发时间。&nbsp;&nbsp;&nbsp;</div>")
 			.append(
 				$("<input id='isStudentTicket' type='checkbox' />").change(function(){
-					isStudentTicket = this.checked;
+					isStudentTicket = this.checked ;
 				})
 			)
 			.append(
 				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
 			)
+            .append(
+				$("<input id='autoIncreaseDays' type='text' value='0'  maxLength=3 style='width:24px;' />") 
+			)
+			.append(
+				$("<label for='autoIncreaseDays'></label>").html("天循环&nbsp;&nbsp;")
+			)
 			.append(
 				$("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("开始刷票").click(function() {
 					if(!isAutoQueryEnabled) {
+                        __reset_autoIncreaseDays() ;
 						isTicketAvailable = false;
 						if(audio && !audio.paused) audio.pause();
 						isAutoQueryEnabled = true;
