@@ -138,7 +138,6 @@ withjQuery(function($, window){
                     pools.push( _date ) ;
                 }
                 index_autoIncreaseDay = 1 ;
-                alert(pools)
                 pools_autoIncreaseDay   = pools ;
                 return ;
             }
@@ -346,6 +345,7 @@ withjQuery(function($, window){
 
 		//Ticket type selector & UI
 		var ticketType = new Array();
+        var checkbox_list   = new Array();
 		$(".hdr tr:eq(2) td").each(function(i,e) {
 			ticketType.push(false);
 			if(i<3) return;
@@ -356,7 +356,14 @@ withjQuery(function($, window){
 			c.change(function() {
 				ticketType[this.ticketTypeId] = this.checked;
 			}).appendTo(e);
+            checkbox_list.push(c);
 		});
+        $.each([1,2], function(){
+            var c   = checkbox_list.pop() ;
+            c[0].checked    = false ;
+            ticketType[ c[0].ticketTypeId ] = this.checked ;
+        });
+        delete checkbox_list ;
 	}
 
 	route("querySingleAction.do", query);
