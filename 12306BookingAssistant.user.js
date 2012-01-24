@@ -366,7 +366,7 @@ withjQuery(function($, window){
         
         $('<div style="position:relative;top:0px; left:0px; height:0px; width:1px; overflow:visiable; background-color:#ff0;"></div>')
                 .append(
-                        $('<button style="position:absolute;top:30px; left:2px; width:40px;">前一天</button>').click(function() {
+                        $('<a style="position:absolute;top:26px; left:2px; width:40px;">前一天</a>').click(function() {
                             var date = __date_parse( document.getElementById('startdatepicker').value );
                             date.setTime(  date.getTime() - 3600 * 24 * 1000 ) ;
                             document.getElementById('startdatepicker').value    =  __date_format(date)  ;
@@ -374,7 +374,7 @@ withjQuery(function($, window){
                         })
                     )
                 .append(
-                        $('<button  style="position:absolute;top:30px; left:114px; width:40px;">下一天</button>').click(function() {
+                        $('<a  style="position:absolute;top:26px; left:114px; width:40px;">下一天</a>').click(function() {
                             var date = __date_parse( document.getElementById('startdatepicker').value );
                             date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
                             document.getElementById('startdatepicker').value    =  __date_format(date)  ;
