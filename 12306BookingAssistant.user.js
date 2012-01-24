@@ -108,8 +108,68 @@ withjQuery(function($, window){
 	function query() {
 
 		//query
+        var maxIncreaseDay  = 0 ;
+        var start_autoIncreaseDay = null ;
+        var index_autoIncreaseDay = 1 ;
+        var pools_autoIncreaseDay = []  ;
+        function  __reset_autoIncreaseDays(){
+            maxIncreaseDay   = parseInt( document.getElementById('autoIncreaseDays').value ) || 1 ;
+            if( maxIncreaseDay > 10 ) {
+                maxIncreaseDay  = 10 ;
+            }
+            document.getElementById('autoIncreaseDays').value   = maxIncreaseDay ;
+            start_autoIncreaseDay   = null ;
+        }
+        function  __unset_autoIncreaseDays(){
+            if( start_autoIncreaseDay ) {
+                document.getElementById('startdatepicker').value    = start_autoIncreaseDay ;
+                start_autoIncreaseDay   = null ;
+            }
+        }
+        function __date_format( date ) {
+                var y   = date.getFullYear() ;
+                var m   = date.getMonth() + 1 ;
+                var d   =  date.getDate() ;
+                if( m <= 9 ) {
+                    m = '0' + String( m ) ;
+                } else {
+                    m = String(  m ) ;
+                }
+                if( d <= 9 ) {
+                    d = '0' + String(  d ) ;
+                } else {
+                    d = String( d );
+                }
+                return  String(y) + '-' + m + '-' + d ;
+        }
+        function __date_parse(txt){
+                var a  =  txt.replace(/^\D+/, '').replace(/\D$/, '' ).split(/\D+0?/) ;
+                var date    = new Date;
+                date.setFullYear( parseInt( a[0] )   ) ;
+                date.setMonth( parseInt( a[1] )  - 1  ) ;
+                date.setDate( parseInt( a[2] )  ) ;
+                return date ;
+        }
+        function  __set_autoIncreaseDays() {
+            if( !start_autoIncreaseDay ) {
+                start_autoIncreaseDay   =  document.getElementById('startdatepicker').value ;
+                var date = __date_parse(start_autoIncreaseDay);
+                pools_autoIncreaseDay  = new Array() ;
+                for(var i = 0 ; i < maxIncreaseDay  ; i++) {
+                    pools_autoIncreaseDay.push(  __date_format(date) ) ;
+                    date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
+                }
+                index_autoIncreaseDay = 1 ; 
+                return ;
+            }
+            if( index_autoIncreaseDay >= pools_autoIncreaseDay.length ) {
+                index_autoIncreaseDay   = 0 ;
+            }
+            var value   = pools_autoIncreaseDay[index_autoIncreaseDay++];
+             document.getElementById('startdatepicker').value   = value ;
+        }
+        
 		var isTicketAvailable = false;
-
 		var firstRemove = false;
 
 		window.$ && window.$(".obj:first").ajaxComplete(function() {
@@ -146,6 +206,7 @@ withjQuery(function($, window){
 		var doQuery = function() {
 			displayQueryTimes(queryTimes++);
 			firstRemove = true;
+            __set_autoIncreaseDays();
 			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
 		}
 
@@ -238,15 +299,22 @@ withjQuery(function($, window){
 		var ui = $("<div>请先选择好出发地，目的地，和出发时间。&nbsp;&nbsp;&nbsp;</div>")
 			.append(
 				$("<input id='isStudentTicket' type='checkbox' />").change(function(){
-					isStudentTicket = this.checked;
+					isStudentTicket = this.checked ;
 				})
 			)
 			.append(
 				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
 			)
+            .append(
+				$("<input id='autoIncreaseDays' type='text' value='3'  maxLength=2 style='width:18px;' />") 
+			)
+			.append(
+				$("<label for='autoIncreaseDays'></label>").html("天循环&nbsp;&nbsp;")
+			)
 			.append(
 				$("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("开始刷票").click(function() {
 					if(!isAutoQueryEnabled) {
+                        __reset_autoIncreaseDays() ;
 						isTicketAvailable = false;
 						if(audio && !audio.paused) audio.pause();
 						isAutoQueryEnabled = true;
@@ -254,6 +322,7 @@ withjQuery(function($, window){
 						this.innerHTML="停止刷票";
 					}
 					else {
+                        __unset_autoIncreaseDays();
 						isAutoQueryEnabled = false;
 						this.innerHTML="开始刷票";
 					}
@@ -294,9 +363,30 @@ withjQuery(function($, window){
 		var container = $(".cx_title_w:first");
 		container.length ?
 			ui.insertBefore(container) : ui.appendTo(document.body);
-
+        
+        $('<div style="position:relative;top:0px; left:0px; height:0px; width:1px; overflow:visiable; background-color:#ff0;"></div>')
+                .append(
+                        $('<button style="position:absolute;top:30px; left:2px; width:40px;">前一天</button>').click(function() {
+                            var date = __date_parse( document.getElementById('startdatepicker').value );
+                            date.setTime(  date.getTime() - 3600 * 24 * 1000 ) ;
+                            document.getElementById('startdatepicker').value    =  __date_format(date)  ;
+                            return false;
+                        })
+                    )
+                .append(
+                        $('<button  style="position:absolute;top:30px; left:114px; width:40px;">下一天</button>').click(function() {
+                            var date = __date_parse( document.getElementById('startdatepicker').value );
+                            date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
+                            document.getElementById('startdatepicker').value    =  __date_format(date)  ;
+                            return false;
+                                return false;
+                        })
+                    )
+                .insertBefore( $('#startdatepicker') )
+        
 		//Ticket type selector & UI
 		var ticketType = new Array();
+        var checkbox_list   = new Array();
 		$(".hdr tr:eq(2) td").each(function(i,e) {
 			ticketType.push(false);
 			if(i<3) return;
@@ -307,7 +397,14 @@ withjQuery(function($, window){
 			c.change(function() {
 				ticketType[this.ticketTypeId] = this.checked;
 			}).appendTo(e);
+            checkbox_list.push(c);
 		});
+        $.each([1, 2 ], function(){
+            var c   = checkbox_list.pop() ;
+            c[0].checked    = false ;
+            ticketType[ c[0].ticketTypeId ] = this.checked ;
+        });
+        delete checkbox_list ;
 	}
 
 	route("querySingleAction.do", query);
