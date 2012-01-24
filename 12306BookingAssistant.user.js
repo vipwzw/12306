@@ -113,39 +113,59 @@ withjQuery(function($, window){
         var index_autoIncreaseDay = 1 ;
         var pools_autoIncreaseDay = []  ;
         function  __reset_autoIncreaseDays(){
-            maxIncreaseDay   = parseInt( document.getElementById('autoIncreaseDays').value ) || 0 ;
+            maxIncreaseDay   = parseInt( document.getElementById('autoIncreaseDays').value ) || 1 ;
+            if( maxIncreaseDay > 10 ) {
+                maxIncreaseDay  = 10 ;
+            }
             document.getElementById('autoIncreaseDays').value   = maxIncreaseDay ;
             start_autoIncreaseDay   = null ;
         }
-        function  __set_autoIncreaseDays(){
+        function  __unset_autoIncreaseDays(){
+            if( start_autoIncreaseDay ) {
+                document.getElementById('startdatepicker').value    = start_autoIncreaseDay ;
+                start_autoIncreaseDay   = null ;
+            }
+        }
+        function __date_format( date ) {
+                var y   = date.getFullYear() ;
+                var m   = date.getMonth() + 1 ;
+                var d   =  date.getDate() ;
+                if( m <= 9 ) {
+                    m = '0' + String( m ) ;
+                } else {
+                    m = String(  m ) ;
+                }
+                if( d <= 9 ) {
+                    d = '0' + String(  d ) ;
+                } else {
+                    d = String( d );
+                }
+                return  String(y) + '-' + m + '-' + d ;
+        }
+        function __date_parse(txt){
+                var a  =  txt.replace(/^\D+/, '').replace(/\D$/, '' ).split(/\D+0?/) ;
+                var date    = new Date;
+                date.setFullYear( parseInt( a[0] )   ) ;
+                date.setMonth( parseInt( a[1] )  - 1  ) ;
+                date.setDate( parseInt( a[2] )  ) ;
+                return date ;
+        }
+        function  __set_autoIncreaseDays() {
             if( !start_autoIncreaseDay ) {
                 start_autoIncreaseDay   =  document.getElementById('startdatepicker').value ;
-                var _list   = start_autoIncreaseDay.split(/\D+0?/) ;
-                var pools   = [ start_autoIncreaseDay ] ;
-                for(var i = 0 ; i < maxIncreaseDay -1 ; i++){
-                    var _d  = new Date;
-                    _d.setFullYear( parseInt( _list[0] )   ) ;
-                    _d.setMonth( parseInt( _list[1] )  - 1  ) ;
-                    _d.setDate( parseInt( _list[2] )  + i  + 1 ) ;
-                    var __y   = String(_d.getFullYear());
-                    var __m = _d.getMonth();
-                    var __d = _d.getDate();
-                    if( __m < 9 ) __m = '0' + String( ( __m + 1 ) );
-                    else    __m = String( ( __m + 1 ) ) ;
-                    if( __d <= 9 ) __d = '0' + String(  __d );
-                    else __d = String(  __d );
-                    var _date   = __y + '-' + __m + '-' + __d ;
-                    pools.push( _date ) ;
+                var date = __date_parse(start_autoIncreaseDay);
+                pools_autoIncreaseDay  = new Array() ;
+                for(var i = 0 ; i < maxIncreaseDay  ; i++) {
+                    pools_autoIncreaseDay.push(  __date_format(date) ) ;
+                    date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
                 }
-                index_autoIncreaseDay = 1 ;
-                pools_autoIncreaseDay   = pools ;
+                index_autoIncreaseDay = 1 ; 
                 return ;
             }
-            var value   = pools_autoIncreaseDay[index_autoIncreaseDay];
-            index_autoIncreaseDay++;
             if( index_autoIncreaseDay >= pools_autoIncreaseDay.length ) {
                 index_autoIncreaseDay   = 0 ;
             }
+            var value   = pools_autoIncreaseDay[index_autoIncreaseDay++];
              document.getElementById('startdatepicker').value   = value ;
         }
         
@@ -286,7 +306,7 @@ withjQuery(function($, window){
 				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
 			)
             .append(
-				$("<input id='autoIncreaseDays' type='text' value='0'  maxLength=3 style='width:24px;' />") 
+				$("<input id='autoIncreaseDays' type='text' value='3'  maxLength=2 style='width:18px;' />") 
 			)
 			.append(
 				$("<label for='autoIncreaseDays'></label>").html("天循环&nbsp;&nbsp;")
@@ -302,6 +322,7 @@ withjQuery(function($, window){
 						this.innerHTML="停止刷票";
 					}
 					else {
+                        __unset_autoIncreaseDays();
 						isAutoQueryEnabled = false;
 						this.innerHTML="开始刷票";
 					}
@@ -342,7 +363,27 @@ withjQuery(function($, window){
 		var container = $(".cx_title_w:first");
 		container.length ?
 			ui.insertBefore(container) : ui.appendTo(document.body);
-
+        
+        $('<div style="position:relative;top:0px; left:0px; height:0px; width:1px; overflow:visiable; background-color:#ff0;"></div>')
+                .append(
+                        $('<button style="position:absolute;top:30px; left:2px; width:40px;">前一天</button>').click(function() {
+                            var date = __date_parse( document.getElementById('startdatepicker').value );
+                            date.setTime(  date.getTime() - 3600 * 24 * 1000 ) ;
+                            document.getElementById('startdatepicker').value    =  __date_format(date)  ;
+                            return false;
+                        })
+                    )
+                .append(
+                        $('<button  style="position:absolute;top:30px; left:114px; width:40px;">下一天</button>').click(function() {
+                            var date = __date_parse( document.getElementById('startdatepicker').value );
+                            date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
+                            document.getElementById('startdatepicker').value    =  __date_format(date)  ;
+                            return false;
+                                return false;
+                        })
+                    )
+                .insertBefore( $('#startdatepicker') )
+        
 		//Ticket type selector & UI
 		var ticketType = new Array();
         var checkbox_list   = new Array();
@@ -358,7 +399,7 @@ withjQuery(function($, window){
 			}).appendTo(e);
             checkbox_list.push(c);
 		});
-        $.each([1,2], function(){
+        $.each([1, 2 ], function(){
             var c   = checkbox_list.pop() ;
             c[0].checked    = false ;
             ticketType[ c[0].ticketTypeId ] = this.checked ;
