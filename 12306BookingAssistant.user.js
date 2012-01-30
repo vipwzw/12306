@@ -175,7 +175,6 @@ withjQuery(function($, window){
         }
         function getTimeLimitValues(){
             return $.map(  [ $('#startTimeHFrom').val()  , $('#startTimeMFrom').val(), $('#startTimeHTo').val(), $('#startTimeMTo').val() ] , function(val){
-                val = val.replace(/^0/, '') ;
                 return parseInt(val) || 0 ;
             }) ;
         }
@@ -436,7 +435,7 @@ withjQuery(function($, window){
                 var element  = $('<select id="' + id + '" style="margin:-2px 0px 0px -5px;padding:0px;font-size:10px; line-height:100%; height:12px;"></select>') ;
                 for(var i = 0; i <= max_value ; i++) {
                     element.append(
-                       $('<option value=' + i + ' style="padding:0px;margin:0px;" ' + ( default_value == i ? ' selected="selected" ' : '' ) + '>' + ( i <= 9 ? '0' + i : i ) + '</option>' )
+                       $('<option value="' + i + '" style="padding:0px;margin:0px;" ' + ( default_value == i ? ' selected="selected" ' : '' ) + '>' + ( i <= 9 ? '0' + i : i ) + '</option>' )
                     )
                 }
                 box.append(
