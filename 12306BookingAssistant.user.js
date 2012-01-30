@@ -263,7 +263,7 @@ withjQuery(function($, window){
 				return false;
 			}
            
-            var   = $(row).find("td") ;
+            var cells  = $(row).find("td") ;
             if( cells.length < 5 ) {
                 return false ;
             }
