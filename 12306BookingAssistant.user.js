@@ -119,12 +119,14 @@ withjQuery(function($, window){
             }
             document.getElementById('autoIncreaseDays').value   = maxIncreaseDay ;
             start_autoIncreaseDay   = null ;
+            $('#app_next_day,#app_pre_day').addClass('disabled').css('color', '#aaa' );
         }
         function  __unset_autoIncreaseDays(){
             if( start_autoIncreaseDay ) {
                 document.getElementById('startdatepicker').value    = start_autoIncreaseDay ;
                 start_autoIncreaseDay   = null ;
             }
+            $('#app_next_day,#app_pre_day').removeClass('disabled').css('color', '#000' );
         }
         function __date_format( date ) {
                 var y   = date.getFullYear() ;
@@ -143,11 +145,14 @@ withjQuery(function($, window){
                 return  String(y) + '-' + m + '-' + d ;
         }
         function __date_parse(txt){
-                var a  =  txt.replace(/^\D+/, '').replace(/\D$/, '' ).split(/\D+0?/) ;
-                var date    = new Date;
-                date.setFullYear( parseInt( a[0] )   ) ;
-                date.setMonth( parseInt( a[1] )  - 1  ) ;
-                date.setDate( parseInt( a[2] )  ) ;
+                var a  =  $.map(txt.replace(/^\D+/, '').replace(/\D$/, '' ).split(/\D+0?/) , function(i){
+                    return parseInt(i) ;
+                }) ;
+                a[1]    -= 1 ;
+                var   date  = new Date;
+                date.setFullYear(  a[0]    ) ;
+                date.setMonth( a[1]  , a[2]  ) ;
+                date.setDate( a[2] ) ;
                 return date ;
         }
         function  __set_autoIncreaseDays() {
@@ -168,13 +173,19 @@ withjQuery(function($, window){
             var value   = pools_autoIncreaseDay[index_autoIncreaseDay++];
              document.getElementById('startdatepicker').value   = value ;
         }
+        function getTimeLimitValues(){
+            return $.map(  [ $('#startTimeHFrom').val()  , $('#startTimeMFrom').val(), $('#startTimeHTo').val(), $('#startTimeMTo').val() ] , function(val){
+                return parseInt(val) || 0 ;
+            }) ;
+        }
         
 		var isTicketAvailable = false;
 		var firstRemove = false;
 
 		window.$ && window.$(".obj:first").ajaxComplete(function() {
+            var  _timeLimit = getTimeLimitValues();
 			$(this).find("tr").each(function(n, e) {
-				if(checkTickets(e)){
+				if(checkTickets(e, _timeLimit, n )){
 					isTicketAvailable = true;
 					highLightRow(e);
 				}	
@@ -215,7 +226,8 @@ withjQuery(function($, window){
 		var $specialOnly = $("<label style='margin-left:10px;color: blue;'><input type='checkbox'  id='__chkspecialOnly'/>仅显示限定车次<label>");
 		var $includeCanOder = $("<label style='margin-right:10px;color: blue;'><input type='checkbox' id='__chkIncludeCanOder'/>显示可预定车次<label>");
 		//add by 冯岩 end 2012-01-18
-		var checkTickets = function(row) {
+		var checkTickets = function(row, time_limit , row_index ) {
+
 			var hasTicket = false;
 			var v1 = $special.val();			
 			var removeOther = $("#__chkspecialOnly").attr("checked");
@@ -250,8 +262,29 @@ withjQuery(function($, window){
 			if( $(row).find("td input.yuding_x[type=button]").length ) {
 				return false;
 			}
-
-			$("td", row).each(function(i, e) {
+           
+            var cells  = $(row).find("td") ;
+            if( cells.length < 5 ) {
+                return false ;
+            }
+            var _start_time = $.map(  $(cells[1]).text().replace(/^\D+|\D+$/, '').split(/\D+0?/) , function(val){
+               return parseInt(val) || 0 ; 
+            }) ;
+            
+            while( _start_time.length > 2 ) {
+                _start_time.shift() ; // remove station name include number 
+            }
+            if( _start_time[0] < time_limit[0] ||  _start_time[0]  > time_limit[2] ) {
+                return false ;
+            }
+            if( _start_time[0] == time_limit[0] && _start_time[1]  <  time_limit[1] ){
+                return false ;
+            }
+            if( _start_time[0] == time_limit[2] && _start_time[1]  >  time_limit[3] ){
+                return false ;
+            }
+            
+			cells.each(function(i, e) {
 				if(ticketType[i-1]) {
 					var info = $.trim($(e).text());
 					if(info != "--" && info != "无") {
@@ -366,7 +399,10 @@ withjQuery(function($, window){
         
         $('<div style="position:relative;top:0px; left:0px; height:0px; width:1px; overflow:visiable; background-color:#ff0;"></div>')
                 .append(
-                        $('<button style="position:absolute;top:30px; left:2px; width:40px;">前一天</button>').click(function() {
+                        $('<a id="app_pre_day" style="position:absolute;top:26px; left:2px; width:40px; color:#000;">前一天</a>').click(function() {
+                            if( $(this).hasClass("disabled") ) {
+                                return false ;
+                            }
                             var date = __date_parse( document.getElementById('startdatepicker').value );
                             date.setTime(  date.getTime() - 3600 * 24 * 1000 ) ;
                             document.getElementById('startdatepicker').value    =  __date_format(date)  ;
@@ -374,15 +410,50 @@ withjQuery(function($, window){
                         })
                     )
                 .append(
-                        $('<button  style="position:absolute;top:30px; left:114px; width:40px;">下一天</button>').click(function() {
+                        $('<a id="app_next_day"  style="position:absolute;top:26px; left:114px; width:40px; color:#000;">下一天</a>').click(function() {
+                            if( $(this).hasClass("disabled") ) {
+                                return false ;
+                            }
                             var date = __date_parse( document.getElementById('startdatepicker').value );
                             date.setTime(  date.getTime() + 3600 * 24 * 1000 ) ;
                             document.getElementById('startdatepicker').value    =  __date_format(date)  ;
                             return false;
-                                return false;
                         })
                     )
-                .insertBefore( $('#startdatepicker') )
+                .insertBefore( $('#startdatepicker') ) ;
+  
+        setTimeout(function(){
+            var box = $('<div style="position:relative;top:2px; left:0px; width:100px; height:18px; line-height:18px;  font-size:12px; padding:0px; overflow:hidden;"></div>') ;
+            function makeSelect(id, max_value, default_value){
+                var element  = $('<select id="' + id + '" style="margin:-2px 0px 0px -5px;padding:0px;font-size:12px; line-height:100%; "></select>') ;
+                for(var i = 0; i <= max_value ; i++) {
+                    element.append(
+                       $('<option value="' + i + '" style="padding:0px;margin:0px;font-size:12px; line-height:100%;" ' + ( default_value == i ? ' selected="selected" ' : '' ) + '>' + ( i <= 9 ? '0' + i : i ) + '</option>' )
+                    )
+                }
+                box.append(
+                    $('<div style="width:18px; padding:0px; overflow:hidden; float:left;"></div>') .append(element)
+                );
+                return element ;
+            }
+            function check(evt){
+                var tl  = getTimeLimitValues() ;
+                if( tl[0] > tl[2] || (tl[0] == tl[2]  && tl[1] > tl[3]) ) {
+                    alert('最早发车时间必须早于最晚发车时间，请重新选择！') ;
+                    return false ;
+                }
+            }
+            makeSelect('startTimeHFrom' , 23 ).change(check) ;
+            box.append( $('<div style="float:left;">:</div>')) ;
+            makeSelect('startTimeMFrom' , 59 ).change(check) ;
+            box.append( $('<div style="float:left;padding:0px 1px;">--</div>')) ;
+            makeSelect('startTimeHTo' , 23, 23 ).change(check) ;
+            box.append( $('<div style="float:left;">:</div>')) ;
+            makeSelect('startTimeMTo' , 59, 59 ).change(check) ;
+            
+            box.insertAfter(  $('#startTime') )
+   
+        }, 10 ) ;
         
 		//Ticket type selector & UI
 		var ticketType = new Array();
