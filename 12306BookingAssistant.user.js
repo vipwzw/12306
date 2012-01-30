@@ -179,16 +179,6 @@ withjQuery(function($, window){
             }) ;
         }
         
-        function getInputLocation(el) { 
-            if( el.createTextRange) { // IE              
-                var range = document.selection.createRange();                
-                range.setEndPoint('StartToStart', el.createTextRange());                
-                return range.text.length; 
-            } else if(typeof el.selectionStart == 'number') { // Firefox 
-                return [ el.selectionStart , el.selectionEnd ]; 
-            } 
-        } 
-        
 		var isTicketAvailable = false;
 		var firstRemove = false;
 
@@ -273,7 +263,10 @@ withjQuery(function($, window){
 				return false;
 			}
            
-            var cells  = $(row).find("td") ;
+            var   = $(row).find("td") ;
+            if( cells.length < 5 ) {
+                return false ;
+            }
             var _start_time = $.map(  $(cells[1]).text().replace(/^\D+|\D+$/, '').split(/\D+0?/) , function(val){
                return parseInt(val) || 0 ; 
             }) ;
@@ -446,7 +439,7 @@ withjQuery(function($, window){
             function check(evt){
                 var tl  = getTimeLimitValues() ;
                 if( tl[0] > tl[2] || (tl[0] == tl[2]  && tl[1] > tl[3]) ) {
-                    alert('最早时间必须早于最晚发车时间，请重新选择！') ;
+                    alert('最早发车时间必须早于最晚发车时间，请重新选择！') ;
                     return false ;
                 }
             }
