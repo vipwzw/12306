@@ -272,7 +272,7 @@ withjQuery(function($, window){
             }) ;
             
             while( _start_time.length > 2 ) {
-                _start_time.pop() ; // remove station name include number 
+                _start_time.shift() ; // remove station name include number 
             }
             if( _start_time[0] < time_limit[0] ||  _start_time[0]  > time_limit[2] ) {
                 return false ;
