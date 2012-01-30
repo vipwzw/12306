@@ -423,16 +423,16 @@ withjQuery(function($, window){
                 .insertBefore( $('#startdatepicker') ) ;
   
         setTimeout(function(){
-            var box = $('<div style="position:relative;top:4px; left:0px; height:16px; width:120px; width:120px; font-size:10px; line-height:100%; padding:0px;"></div>') ;
+            var box = $('<div style="position:relative;top:2px; left:0px; width:100px; height:18px; line-height:18px;  font-size:12px; padding:0px; overflow:hidden;"></div>') ;
             function makeSelect(id, max_value, default_value){
-                var element  = $('<select id="' + id + '" style="margin:-2px 0px 0px -5px;padding:0px;font-size:10px; line-height:100%; height:12px;"></select>') ;
+                var element  = $('<select id="' + id + '" style="margin:-2px 0px 0px -5px;padding:0px;font-size:12px; line-height:100%; "></select>') ;
                 for(var i = 0; i <= max_value ; i++) {
                     element.append(
-                       $('<option value="' + i + '" style="padding:0px;margin:0px;" ' + ( default_value == i ? ' selected="selected" ' : '' ) + '>' + ( i <= 9 ? '0' + i : i ) + '</option>' )
+                       $('<option value="' + i + '" style="padding:0px;margin:0px;font-size:12px; line-height:100%;" ' + ( default_value == i ? ' selected="selected" ' : '' ) + '>' + ( i <= 9 ? '0' + i : i ) + '</option>' )
                     )
                 }
                 box.append(
-                    $('<div style="width:20px; height:14px; padding:0px; overflow:hidden; float:left; "></div>') .append(element)
+                    $('<div style="width:18px; padding:0px; overflow:hidden; float:left;"></div>') .append(element)
                 );
                 return element ;
             }
@@ -451,7 +451,8 @@ withjQuery(function($, window){
             box.append( $('<div style="float:left;">:</div>')) ;
             makeSelect('startTimeMTo' , 59, 59 ).change(check) ;
             
-            box.insertAfter( $('#startTime') )
+            box.insertAfter(  $('#startTime') )
+   
         }, 10 ) ;
         
 		//Ticket type selector & UI
