@@ -339,7 +339,7 @@ withjQuery(function($, window){
 				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
 			)
             .append(
-				$("<input id='autoIncreaseDays' type='text' value='3'  maxLength=2 style='width:18px;' />") 
+				$("<input id='autoIncreaseDays' type='text' value='1'  maxLength=2 style='width:18px;' />") 
 			)
 			.append(
 				$("<label for='autoIncreaseDays'></label>").html("天循环&nbsp;&nbsp;")
