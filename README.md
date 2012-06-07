@@ -1,7 +1,9 @@
 12306 订票助手 1.4.0
 ===========================
 
-火车上呆两天，回来验证码的bug就被堵了，目前自动登录和自动订单都不好使了，由[冯岩](https://github.com/eflylab)同学改了一个每次登录输入验证码的方案。见1.4.0版
+欢迎下载我们的iPhone版本 [http://itunes.apple.com/app/id528244899?mt=8](http://itunes.apple.com/app/id528244899?mt=8)
+
+自动查询能用，自动登录和自动重试订单已经不好使了
 
 BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306/issues
 
