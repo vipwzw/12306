@@ -483,6 +483,7 @@ withjQuery(function($, window){
 	route("confirmPassengerResignAction.do?method=cancelOrderToQuery", query);
 
 	route("loginAction.do?method=init", function() {
+		return;
 		if( !window.location.href.match( /init$/i ) ) {
 			return;
 		}
@@ -560,8 +561,8 @@ withjQuery(function($, window){
 
 		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
 	});
-	route("confirmPassengerAction.do", submit);
-	route("confirmPassengerResignAction.do", submit);
+	//route("confirmPassengerAction.do", submit);
+	//route("confirmPassengerResignAction.do", submit);
 	function submit() {
 		/**
 		 * Auto Submit Order
