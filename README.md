@@ -3,7 +3,7 @@
 
 欢迎下载我们的iPhone版本 [http://itunes.apple.com/app/id528244899?mt=8](http://itunes.apple.com/app/id528244899?mt=8)
 
-BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306/issues
+BUG提交或者查看已经解决的问题： https://github.com/vipwzw/12306/issues
 
 我修改了自动登录的部分，现在已经可以实现自动登录了
 
@@ -23,13 +23,13 @@ BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306
 
 有使用 12306自动登录 和 12306自动查询 的同学可在 插件管理(chrome://settings/extensions) 里面卸载了，因为功能重复了
 
-使用谷歌浏览器 [点击这里](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装此UserScript
+使用谷歌浏览器 [点击这里](https://github.com/vipwzw/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装此UserScript
 
 ###安装(IE版) 
 
 首先安装 [Trixie](http://www.bhelpuri.net/Trixie/TrixieDownload.htm)
 
-下载[这个脚本](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js) 保存到 C:\Program Files\Bhelpuri\Trixie\Scripts文件夹下（64位系统在：C:\Program Files (x86)\Bhelpuri\Trixie\Scripts）
+下载[这个脚本](https://github.com/vipwzw/12306/raw/master/12306BookingAssistant.user.js) 保存到 C:\Program Files\Bhelpuri\Trixie\Scripts文件夹下（64位系统在：C:\Program Files (x86)\Bhelpuri\Trixie\Scripts）
 
 在工具->Trixie Options（Trixie选项）中点击Reload Scripts（重新载入）按钮，再选中该脚本，即可使用（如在工具里面没发现Trixie Options请重启浏览器）。
 
@@ -39,7 +39,7 @@ BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306
 ###安装(火狐浏览器版本) 
 
 首先安装 [Greasemonkey](https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/) 插件来支持UserScript
-然后 [点击这里](https://github.com/zzdhidden/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装
+然后 [点击这里](https://github.com/vipwzw/12306/raw/master/12306BookingAssistant.user.js), 然后确认安装
 
 
 ###开始订票
@@ -50,20 +50,20 @@ BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306
 
 首先输入好登录名，密码，和验证码。 点击自动登录，即可进行多次尝试登录，直至登录成功
 
-![登录](https://github.com/zzdhidden/12306/raw/master/login.jpg)
+![登录](https://github.com/vipwzw/12306/raw/master/login.jpg)
 
 ###刷票
 
 登录之后到车票预订页面，选择好出发地，目的地，和出发时间，点击开始刷票，就会不断更新火车票，只到有票为止，刷到之后会有通知提示和声音提示
 
-![查询](https://github.com/zzdhidden/12306/raw/master/query.jpg)
+![查询](https://github.com/vipwzw/12306/raw/master/query.jpg)
 
 ###订单
 
 当跳转到订单页时，如果没有选择用户会自动选择第一个用户，需要用户自己输入验证码
 自动提交订单功能会在用户过多等预订失败的情况下，自动重新提交订单
 
-![订单](https://github.com/zzdhidden/12306/raw/master/order.jpg)
+![订单](https://github.com/vipwzw/12306/raw/master/order.jpg)
 
 那些贡献者们....
 ------------
@@ -111,15 +111,15 @@ BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306
 
 ###1.3.3
 
-*	限定多个车次刷票 [#29](https://github.com/zzdhidden/12306/issues/29)
-*	Firefox greasemonkey插件支持 [#21](https://github.com/zzdhidden/12306/issues/21)
-*	更新自动提交代码 [#25](https://github.com/zzdhidden/12306/issues/25)
+*	限定多个车次刷票 [#29](https://github.com/vipwzw/12306/issues/29)
+*	Firefox greasemonkey插件支持 [#21](https://github.com/vipwzw/12306/issues/21)
+*	更新自动提交代码 [#25](https://github.com/vipwzw/12306/issues/25)
 
 ###1.3.2
 
-*	改变刷票页面字体高亮颜色 [#14](https://github.com/zzdhidden/12306/issues/14)
-*	增加提交频率和停止提交订单功能 [#13](https://github.com/zzdhidden/12306/issues/13)
-*	订单中日期修改 [#12](https://github.com/zzdhidden/12306/issues/12)
+*	改变刷票页面字体高亮颜色 [#14](https://github.com/vipwzw/12306/issues/14)
+*	增加提交频率和停止提交订单功能 [#13](https://github.com/vipwzw/12306/issues/13)
+*	订单中日期修改 [#12](https://github.com/vipwzw/12306/issues/12)
 
 
 ###1.3.1
@@ -151,5 +151,5 @@ BUG提交或者查看已经解决的问题： https://github.com/zzdhidden/12306
 获取更新
 --------------------
 
-*	GitHub关注： https://github.com/zzdhidden/12306
+*	GitHub关注： https://github.com/vipwzw/12306
 
