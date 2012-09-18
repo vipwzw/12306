@@ -483,13 +483,13 @@ withjQuery(function($, window){
 	route("confirmPassengerResignAction.do?method=cancelOrderToQuery", query);
 
 	route("loginAction.do?method=init", function() {
-		return;
 		if( !window.location.href.match( /init$/i ) ) {
 			return;
 		}
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+		var randCodeUrl = "https://dynamic.12306.cn/otsweb/loginAction.do?method=loginAysnSuggest"
 		//Check had login, redirect to query url
 		if( window.parent && window.parent.$ ) {
 			var str = window.parent.$("#username_ a").attr("href");
@@ -499,15 +499,28 @@ withjQuery(function($, window){
 			}
 		}
 
-		function submitForm(){
+		function submitForm() {
+			$.get(randCodeUrl, {__tmp : Math.random()}, function (ret) {
+				ret = eval("("+ret+")")
+				console.log(ret)
+				submitForm2(ret.loginRand)
+			})
+		}
+
+		function submitForm2(code){
 			var submitUrl = url;
 			$.ajax({
 				type: "POST",
 				url: submitUrl,
 				data: {
-					"loginUser.user_name": $("#UserName").val()
+					"loginRand" : code
+				  , "loginUser.user_name": $("#UserName").val()
 				  , "user.password": $("#password").val()
 				  , "randCode": $("#randCode").val()
+				  , "nameErrorFocus" : ""
+				  , "passwordErrorFocus" : ""
+				  , "refundFlag" : "Y"
+				  , "refundLogin" : "N"
 				},
 				beforeSend: function( xhr ) {
 					try{
@@ -523,13 +536,15 @@ withjQuery(function($, window){
 					//密码输入错误
 					//您的用户已经被锁定
 					if ( msg.indexOf('请输入正确的验证码') > -1 ) {
-						alert('请输入正确的验证码！');
+						 console.log('请输入正确的验证码！');
 					} else if ( msg.indexOf('当前访问用户过多') > -1 ){
+						 console.log('当前访问用户过多');
 						reLogin();
 					} else if( msg.match(/var\s+isLogin\s*=\s*true/i) ) {
 						notify('登录成功，开始查询车票吧！');
 						window.location.replace( queryurl );
 					} else {
+						console.log('查询不到消息');
 						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
 						if( msg && msg[1] ) {
 							alert( msg && msg[1] );
@@ -543,6 +558,7 @@ withjQuery(function($, window){
 				}
 			});
 		}
+
 
 		var count = 1;
 		function reLogin(){
